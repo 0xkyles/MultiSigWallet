@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 contract MutliSignatureWallet {
-  mapping(address => bool) public owners;
-  uint256 public numOfOwners; 
-  uint256 public immutable approvalsRequired;
+  mapping(address => bool) owners;
+  uint256 numOfOwners; 
+  uint256 immutable approvalsRequired;
 
-  event ProposeTransaction(uint256 indexed txId, address indexed proposer, address indexed to, uint256 value, bytes data);
+  event ProposeTransaction(uint256 indexed txID, address indexed proposer, address indexed to, uint256 value, bytes data);
   event Deposit(address indexed sender, uint256 value);
 
   receive() external payable {
@@ -47,7 +47,7 @@ contract MutliSignatureWallet {
   mapping (uint => Transaction) public transactions;
 
   function proposeTransaction(address _to, uint256 _value, bytes memory _data) public onlyOwner {
-    require(_value <= address(this).balance, "balance insufficient");
+    require(_value <= address(this).balance, "Balance insufficient");
 
     Transaction storage t = transactions[numTransactions++];
     t.proposer = msg.sender;
