@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 contract MutliSignatureWallet {
-  mapping(address => bool) owners;
-  uint256 numOfOwners; 
-  uint256 immutable approvalsRequired;
+  mapping(address => bool) public owners;
+  uint256 public numOfOwners; 
+  uint256 public immutable approvalsRequired;
 
   uint256 public numTransactions;
   mapping (uint => Transaction) public transactions;
