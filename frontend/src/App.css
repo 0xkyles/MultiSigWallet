@@ -76,7 +76,19 @@
 }
 
 .bg-grid {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.25) 0.5px, transparent 0.5px, transparent calc(100% - 0.5px), rgba(0, 0, 0, 0.25) calc(100% - 0.5px)), linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0.5px, transparent 0.5px, transparent calc(100% - 0.5px), rgba(0, 0, 0, 0.25) calc(100% - 0.5px));
+  background-image: linear-gradient(
+      rgba(0, 0, 0, 0.25) 0.5px,
+      transparent 0.5px,
+      transparent calc(100% - 0.5px),
+      rgba(0, 0, 0, 0.25) calc(100% - 0.5px)
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.25) 0.5px,
+      transparent 0.5px,
+      transparent calc(100% - 0.5px),
+      rgba(0, 0, 0, 0.25) calc(100% - 0.5px)
+    );
   background-size: 5% 5%;
   border: 0.5px solid #111518;
 }
