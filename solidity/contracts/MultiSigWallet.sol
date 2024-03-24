@@ -11,7 +11,8 @@ contract MutliSignatureWallet {
 
   event ProposeTransaction(uint256 indexed txID, address indexed proposer, address indexed to, uint256 value, bytes data);
   event Deposit(address indexed sender, uint256 value);
-  event ConfirmTransaction(uint256 indexed txID, address indexed owner);
+  event ApproveTransaction(uint256 indexed txID, address indexed owner);
+  event RevokeApproval(uint256 indexed txID, address indexed owner);
 
   receive() external payable {
     emit Deposit(msg.sender, msg.value);
@@ -52,13 +53,18 @@ contract MutliSignatureWallet {
     _;
   }
 
-  modifier unConfirmedTx(uint256 txID) {
-    require(!transactions[txID].approvals[msg.sender], "Already confirmed");
+  modifier unApprovedTx(uint256 txID) {
+    require(!transactions[txID].approvals[msg.sender], "Already approved");
     _;
   }
 
   modifier unCompleteTx(uint256 txID) {
     require(!transactions[txID].complete, "Already completed");
+    _;
+  }
+
+  modifier approvedTx(uint256 txID) {
+    require(transactions[txID].approvals[msg.sender], "Not approved");
     _;
   }
 
@@ -76,11 +82,19 @@ contract MutliSignatureWallet {
     emit ProposeTransaction(numTransactions - 1, msg.sender, _to, _value, _data);
   }
 
-  function confirmTransaction(uint256 _txID) external onlyOwner validTx(_txID) unConfirmedTx(_txID) unCompleteTx(_txID) {
+  function approveTransaction(uint256 _txID) external onlyOwner validTx(_txID) unApprovedTx(_txID) unCompleteTx(_txID) {
     Transaction storage t = transactions[_txID];
     t.approvals[msg.sender] = true;
     t.numOfApprovals++;
 
-    emit ConfirmTransaction(_txID, msg.sender);
+    emit ApproveTransaction(_txID, msg.sender);
+  }
+
+  function revokeApproval(uint _txID) external onlyOwner validTx(_txID) approvedTx(_txID) unCompleteTx(_txID) {
+    Transaction storage t = transactions[_txID];
+    t.approvals[msg.sender] = false;
+    t.numOfApprovals--;
+
+    emit RevokeApproval(_txID, msg.sender);
   }
 }
