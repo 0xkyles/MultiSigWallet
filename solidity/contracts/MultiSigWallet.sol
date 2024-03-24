@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.0;
+pragma solidity 0.8.13;
 
-contract MutliSignatureWallet {
+contract MultiSignatureWallet {
   mapping(address => bool) public owners;
   uint256 public numOfOwners; 
   uint256 public immutable approvalsRequired;
@@ -21,7 +21,7 @@ contract MutliSignatureWallet {
 
   constructor(address[] memory _owners, uint256 _approvalsRequired) {
     require(_owners.length > 0, "No owners");
-    require(_approvalsRequired > 0 && _approvalsRequired <= _owners.length);
+    require(_approvalsRequired > 0 && _approvalsRequired <= _owners.length, "number of approval invalid");
 
     for (uint i = 0; i < _owners.length; i++) {
         require(_owners[i] != address(0), "invalid address");
