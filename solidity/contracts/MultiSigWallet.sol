@@ -13,6 +13,7 @@ contract MutliSignatureWallet {
   event Deposit(address indexed sender, uint256 value);
   event ApproveTransaction(uint256 indexed txID, address indexed owner);
   event RevokeApproval(uint256 indexed txID, address indexed owner);
+  event CompleteTransaction(uint256 indexed txID, address indexed owner, bytes data);
 
   receive() external payable {
     emit Deposit(msg.sender, msg.value);
@@ -68,6 +69,11 @@ contract MutliSignatureWallet {
     _;
   }
 
+  modifier canComplete(uint256 txID) {
+    require(transactions[txID].numOfApprovals >= approvalsRequired, "Not enough approvals");
+    _;
+  }
+
   function proposeTransaction(address _to, uint256 _value, bytes memory _data) external onlyOwner {
     require(_value <= address(this).balance, "Balance insufficient");
 
@@ -90,11 +96,21 @@ contract MutliSignatureWallet {
     emit ApproveTransaction(_txID, msg.sender);
   }
 
-  function revokeApproval(uint _txID) external onlyOwner validTx(_txID) approvedTx(_txID) unCompleteTx(_txID) {
+  function revokeApproval(uint256 _txID) external onlyOwner validTx(_txID) approvedTx(_txID) unCompleteTx(_txID) {
     Transaction storage t = transactions[_txID];
     t.approvals[msg.sender] = false;
     t.numOfApprovals--;
 
     emit RevokeApproval(_txID, msg.sender);
+  }
+
+  function completeTransaction(uint256 _txID) external onlyOwner validTx(_txID) unCompleteTx(_txID) canComplete(_txID) {
+    Transaction storage t = transactions[_txID];
+
+    (bool success, bytes memory data) = t.to.call{value : t.value}(t.data);
+    require(success, "tx failed");
+
+    t.complete = true;
+    emit CompleteTransaction(_txID, msg.sender, data);
   }
 }
