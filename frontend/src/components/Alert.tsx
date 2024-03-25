@@ -8,11 +8,12 @@ interface Props {
   title: string;
   description: string;
   variant?: "destructive" | "default";
+  className?: string;
 }
 
-const Alert = ({ title, description, variant }: Props) => {
+const Alert = ({ title, description, variant, className }: Props) => {
   return (
-    <A variant={variant}>
+    <A className={className} variant={variant}>
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{description}</AlertDescription>
     </A>
