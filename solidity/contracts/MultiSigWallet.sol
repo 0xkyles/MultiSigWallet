@@ -2,12 +2,12 @@
 pragma solidity 0.8.13;
 
 contract MultiSignatureWallet {
-  mapping(address => bool) public owners;
-  uint256 public numOfOwners; 
+  address[] public owners;
+  mapping(address => bool) public isOwner;
   uint256 public immutable approvalsRequired;
 
-  uint256 public numTransactions;
-  mapping (uint => Transaction) public transactions;
+  Transaction[] public transactions;
+  mapping(uint => mapping(address => bool)) approvals;
 
   event ProposeTransaction(uint256 indexed txID, address indexed proposer, address indexed to, uint256 value, bytes data);
   event Deposit(address indexed sender, uint256 value);
@@ -25,13 +25,13 @@ contract MultiSignatureWallet {
 
     for (uint i = 0; i < _owners.length; i++) {
         require(_owners[i] != address(0), "invalid address");
-        require(!owners[_owners[i]], "owner exists");
+        require(!isOwner[_owners[i]], "owner exists");
 
-        owners[_owners[i]] = true;
+        isOwner[_owners[i]] = true;
+        owners.push(_owners[i]);
     }
 
     approvalsRequired = _approvalsRequired;
-    numOfOwners = _owners.length;
   }
 
   struct Transaction {
@@ -39,23 +39,22 @@ contract MultiSignatureWallet {
     address to;
     uint256 value;
     bytes data;
-    mapping(address => bool) approvals;
     uint256 numOfApprovals;
     bool complete;
   }
 
   modifier onlyOwner() {
-    require(owners[msg.sender], "Not owner");
+    require(isOwner[msg.sender], "Not owner");
     _;
   }
 
   modifier validTx(uint256 txID) {
-    require(txID < numTransactions, "Invalid transaction");
+    require(txID < transactions.length, "Invalid transaction");
     _;
   }
 
   modifier unApprovedTx(uint256 txID) {
-    require(!transactions[txID].approvals[msg.sender], "Already approved");
+    require(!approvals[txID][msg.sender], "Already approved");
     _;
   }
 
@@ -65,7 +64,7 @@ contract MultiSignatureWallet {
   }
 
   modifier approvedTx(uint256 txID) {
-    require(transactions[txID].approvals[msg.sender], "Not approved");
+    require(approvals[txID][msg.sender], "Not approved");
     _;
   }
 
@@ -77,28 +76,31 @@ contract MultiSignatureWallet {
   function proposeTransaction(address _to, uint256 _value, bytes memory _data) external onlyOwner {
     require(_value <= address(this).balance, "Balance insufficient");
 
-    Transaction storage t = transactions[numTransactions++];
-    t.proposer = msg.sender;
-    t.to = _to;
-    t.value = _value;
-    t.data = _data;
-    t.numOfApprovals = 1;
-    t.approvals[msg.sender] = true;
+    Transaction memory t = Transaction({
+      proposer: msg.sender,
+      to: _to,
+      value: _value,
+      data: _data,
+      numOfApprovals: 1,
+      complete: false
+    });
+    transactions.push(t);
+    approvals[transactions.length - 1][msg.sender] = true;
 
-    emit ProposeTransaction(numTransactions - 1, msg.sender, _to, _value, _data);
+    emit ProposeTransaction(transactions.length - 1, msg.sender, _to, _value, _data);
   }
 
   function approveTransaction(uint256 _txID) external onlyOwner validTx(_txID) unApprovedTx(_txID) unCompleteTx(_txID) {
     Transaction storage t = transactions[_txID];
-    t.approvals[msg.sender] = true;
     t.numOfApprovals++;
+    approvals[_txID][msg.sender] = true;
 
     emit ApproveTransaction(_txID, msg.sender);
   }
 
   function revokeApproval(uint256 _txID) external onlyOwner validTx(_txID) approvedTx(_txID) unCompleteTx(_txID) {
     Transaction storage t = transactions[_txID];
-    t.approvals[msg.sender] = false;
+    approvals[_txID][msg.sender] = false;
     t.numOfApprovals--;
 
     emit RevokeApproval(_txID, msg.sender);
