@@ -6,7 +6,17 @@ contract MultiSignatureWallet {
   mapping(address => bool) public isOwner;
   uint256 public immutable approvalsRequired;
 
+  struct Transaction {
+    address proposer;
+    address to;
+    uint256 value;
+    bytes data;
+    uint256 numOfApprovals;
+    bool complete;
+  }
+
   Transaction[] public transactions;
+  uint256 public transactionsCount;
   mapping(uint => mapping(address => bool)) approvals;
 
   event ProposeTransaction(uint256 indexed txID, address indexed proposer, address indexed to, uint256 value, bytes data);
@@ -34,13 +44,12 @@ contract MultiSignatureWallet {
     approvalsRequired = _approvalsRequired;
   }
 
-  struct Transaction {
-    address proposer;
-    address to;
-    uint256 value;
-    bytes data;
-    uint256 numOfApprovals;
-    bool complete;
+  function getOwners() public view returns (address[] memory) {
+    return owners;
+  }
+
+  function getTransactions() public view returns (Transaction[] memory) {
+    return transactions;
   }
 
   modifier onlyOwner() {
@@ -86,6 +95,7 @@ contract MultiSignatureWallet {
     });
     transactions.push(t);
     approvals[transactions.length - 1][msg.sender] = true;
+    transactionsCount++;
 
     emit ProposeTransaction(transactions.length - 1, msg.sender, _to, _value, _data);
   }
