@@ -17,7 +17,7 @@ contract MultiSignatureWallet {
 
   Transaction[] public transactions;
   uint256 public transactionsCount;
-  mapping(uint => mapping(address => bool)) approvals;
+  mapping(uint => mapping(address => bool)) public approvals;
 
   event ProposeTransaction(uint256 indexed txID, address indexed proposer, address indexed to, uint256 value, bytes data);
   event Deposit(address indexed sender, uint256 value);
