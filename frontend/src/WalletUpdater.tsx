@@ -27,16 +27,16 @@ const WalletUpdater = () => {
     }
   }, [web3]);
 
-  // whenever the account changes
+  // upon account change
   useEffect(() => {
     if (account) {
       const fetch = async () => {
-        const { transactions } = await WalletService.getTransactions(
+        const approvalsByAccount = await WalletService.getTransactionsApprovals(
           contract as Contract<any>,
           account
         );
 
-        setWallet({ ...wallet, transactions });
+        setWallet({ ...wallet, approvalsByAccount });
       };
 
       fetch();

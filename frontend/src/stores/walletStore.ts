@@ -7,7 +7,6 @@ export interface Transaction {
   data: string;
   numOfApprovals: number;
   complete: boolean;
-  approvedByAccount: boolean;
 }
 
 interface Wallet {
@@ -17,6 +16,7 @@ interface Wallet {
   approvalsRequired: number;
   transactionsCount: number;
   transactions: Transaction[];
+  approvalsByAccount: boolean[];
 }
 
 interface WalletStore {

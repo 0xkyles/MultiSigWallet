@@ -11,18 +11,35 @@ interface GetTransactionResponse {
 }
 
 class WalletService {
+  getTransactionsApprovals = async (
+    contract: Contract<any>,
+    account: string
+  ) => {
+    const approvals: boolean[] = [];
+    const transactionsCount = Number(
+      await contract.methods.transactionsCount().call()
+    );
+
+    for (let i = 0; i < transactionsCount; i++) {
+      approvals.push(await contract.methods.approvals(i, account).call());
+    }
+
+    return approvals;
+  };
+
   getTransactions = async (contract: Contract<any>, account: string) => {
     const transactions: Transaction[] = [];
     const transactionsCount = await contract.methods
       .transactionsCount()
       .call<bigint>();
+    const approvalsByAccount = await this.getTransactionsApprovals(
+      contract,
+      account
+    );
 
     for (let i = 0; i < Number(transactionsCount); i++) {
       const t: GetTransactionResponse = await contract.methods
         .transactions(i)
-        .call();
-      const approvedByAccount: boolean = await contract.methods
-        .approvals(i, account)
         .call();
 
       transactions.push({
@@ -32,11 +49,10 @@ class WalletService {
         data: t.data,
         complete: t.complete,
         numOfApprovals: Number(t.numOfApprovals),
-        approvedByAccount,
       });
     }
 
-    return { transactions, transactionsCount };
+    return { transactions, transactionsCount, approvalsByAccount };
   };
 
   getWallet = async (contract: Contract<any>, web3: Web3, account: string) => {
@@ -46,10 +62,8 @@ class WalletService {
       .approvalsRequired()
       .call<bigint>();
     const balance = await web3.eth.getBalance(contractAddress);
-    const { transactionsCount, transactions } = await this.getTransactions(
-      contract,
-      account
-    );
+    const { transactionsCount, transactions, approvalsByAccount } =
+      await this.getTransactions(contract, account);
 
     return {
       balance: Number(balance),
@@ -58,6 +72,7 @@ class WalletService {
       contractAddress,
       transactionsCount: Number(transactionsCount),
       transactions,
+      approvalsByAccount,
     };
   };
 }

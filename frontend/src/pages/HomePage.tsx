@@ -7,8 +7,6 @@ export function HomePage() {
   const { web3Session } = useWeb3Store();
   const { wallet } = useWalletStore();
 
-  console.log(wallet);
-
   return (
     <div className="min-h-screen flex justify-center items-center bg-grid">
       <div className="flex flex-col gap-3 items-center">
