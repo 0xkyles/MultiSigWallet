@@ -1,10 +1,13 @@
 import Alert from "@/components/Alert";
 import useWeb3Store from "@/stores/web3Store";
 import ConnectWalletCard from "@/components/ConnectWalletCard";
-import Test from "@/components/Test";
+import useWalletStore from "@/stores/walletStore";
 
 export function HomePage() {
   const { web3Session } = useWeb3Store();
+  const { wallet } = useWalletStore();
+
+  console.log(wallet);
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-grid">
@@ -16,7 +19,6 @@ export function HomePage() {
               title="Account"
               description={`Connected as ${web3Session.account}`}
             />
-            <Test />
           </>
         )}
         {!web3Session.account && <ConnectWalletCard />}
