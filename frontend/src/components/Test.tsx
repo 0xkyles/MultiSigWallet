@@ -8,22 +8,39 @@ const Test = () => {
     web3Session: { web3, account },
   } = useWeb3Store();
 
+  if (!account) return null;
+
   useEffect(() => {
     const contract = new web3!.eth.Contract(contractABI.abi, contractAddress, {
       from: account,
     });
 
     const fetch = async () => {
-      const result: BigInt = await contract.methods.approvalsRequired().call();
       const owners = await contract.methods.getOwners().call();
       const transactionsCount = await contract.methods
         .transactionsCount()
         .call();
-      console.log(result.toString(), owners, transactionsCount);
+      const approvalsRequired = await contract.methods
+        .approvalsRequired()
+        .call();
+      const balance = await web3?.eth.getBalance(contractAddress);
+
+      let transactions = [];
+      const size = Math.min(5, Number(transactionsCount));
+      for (let i = 0; i < size; i++) {
+        transactions.push(await contract.methods.transactions(i).call());
+      }
+
+      console.log(
+        `Balance ${balance} 
+        - Approvals required ${Number(approvalsRequired)} 
+        - owners ${owners} 
+        - transactionsCount ${Number(transactionsCount)}`
+      );
     };
 
     fetch();
-  });
+  }, []);
 
   return null;
 };

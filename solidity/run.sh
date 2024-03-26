@@ -3,7 +3,7 @@
 echo "Deploying contract..."
 truffle migrate --network development > contract.txt
 contractAddress=$(grep "contract address" < contract.txt | awk '{print $NF}')
-echo "Contract address : $contractAddress"
+echo "Copying contract address into frontend/src/build/contracts : $contractAddress"
 cat > ../frontend/src/build/contracts/contract.json <<EOF 
 {
   "address": "$contractAddress"

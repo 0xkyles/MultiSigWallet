@@ -23,7 +23,7 @@ const SessionUpdater = () => {
 
       return () => clearInterval(interval);
     }
-  }, [account]);
+  }, [web3]);
 
   return null;
 };

@@ -13,6 +13,7 @@ const useConnect = () => {
 
     if (!ethereum) {
       setError("Can't find metamask");
+      setLoading(false);
       return;
     }
 
