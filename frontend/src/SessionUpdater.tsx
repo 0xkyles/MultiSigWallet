@@ -16,7 +16,7 @@ const SessionUpdater = () => {
           const accounts = await web3.eth.getAccounts();
 
           if (account != accounts[0]) {
-            const contract = account
+            const contract = accounts[0]
               ? new web3.eth.Contract(contractABI.abi, contractAddress, {
                   from: accounts[0],
                 })
