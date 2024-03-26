@@ -6,7 +6,7 @@ export interface Transaction {
   value: number;
   data: string;
   numOfApprovals: number;
-  completed: boolean;
+  complete: boolean;
   approvedByAccount: boolean;
 }
 

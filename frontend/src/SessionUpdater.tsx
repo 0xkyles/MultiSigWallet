@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import useWeb3Store from "./stores/web3Store";
+import contractABI from "@/build/contracts/MultiSignatureWallet.json";
+import { address as contractAddress } from "@/build/contracts/contract.json";
 
 const SessionUpdater = () => {
   const {
@@ -14,7 +16,12 @@ const SessionUpdater = () => {
           const accounts = await web3.eth.getAccounts();
 
           if (account != accounts[0]) {
-            update({ web3, account: accounts[0] });
+            const contract = account
+              ? new web3.eth.Contract(contractABI.abi, contractAddress, {
+                  from: accounts[0],
+                })
+              : undefined;
+            update({ web3, account: accounts[0], contract });
           }
         } catch (error) {
           console.log(error);
@@ -23,7 +30,7 @@ const SessionUpdater = () => {
 
       return () => clearInterval(interval);
     }
-  }, [web3]);
+  }, [web3, account]);
 
   return null;
 };
