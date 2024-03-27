@@ -1,10 +1,11 @@
 import Web3, { Contract } from "web3";
 import { create } from "zustand";
 
-interface Web3Session {
+export interface Web3Session {
   web3?: Web3;
   account?: string;
   contract?: Contract<any>;
+  balance?: number;
 }
 
 interface Web3Store {

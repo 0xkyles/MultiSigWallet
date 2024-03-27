@@ -29,8 +29,11 @@ const useConnect = () => {
       const contract = new web3.eth.Contract(contractABI.abi, contractAddress, {
         from: accounts[0],
       });
+      const balance = Number(
+        web3.utils.fromWei(await web3.eth.getBalance(accounts[0]), "ether")
+      );
 
-      update({ account: accounts[0], web3, contract });
+      update({ account: accounts[0], web3, contract, balance });
     } catch (error) {
       setError("Couldn't connect to metamask");
     } finally {

@@ -5,8 +5,8 @@ import {
 } from "@/components/ui/alert";
 
 interface Props {
-  title: string;
-  description: string;
+  title: JSX.Element | string;
+  description: JSX.Element | string;
   variant?: "destructive" | "default";
   className?: string;
 }

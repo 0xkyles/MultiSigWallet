@@ -21,7 +21,15 @@ const SessionUpdater = () => {
                   from: accounts[0],
                 })
               : undefined;
-            update({ web3, account: accounts[0], contract });
+            const balance = accounts[0]
+              ? Number(
+                  web3?.utils.fromWei(
+                    await web3.eth.getBalance(accounts[0]),
+                    "ether"
+                  )
+                )
+              : 0;
+            update({ web3, account: accounts[0], contract, balance });
           }
         } catch (error) {
           console.log(error);
