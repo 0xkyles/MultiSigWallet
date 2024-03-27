@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useWalletStore from "./stores/walletStore";
+import useWalletStore, { Wallet } from "./stores/walletStore";
 import useWeb3Store from "./stores/web3Store";
 import WalletService from "./service/WalletService";
 import { Contract } from "web3";
@@ -40,7 +40,10 @@ const WalletUpdater = () => {
       };
 
       fetch();
+      return;
     }
+
+    setWallet({} as Wallet);
   }, [account]);
 
   return null;

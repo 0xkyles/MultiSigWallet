@@ -9,7 +9,7 @@ export interface Transaction {
   complete: boolean;
 }
 
-interface Wallet {
+export interface Wallet {
   contractAddress: string;
   balance: number;
   owners: string[];
