@@ -11,6 +11,23 @@ interface GetTransactionResponse {
 }
 
 class WalletService {
+  getActiveAccount = (
+    web3: Web3,
+    callback: (error: any | null, result: string | null) => void
+  ) => {
+    const interval = setInterval(async () => {
+      try {
+        const accounts = await web3.eth.getAccounts();
+
+        await callback(null, accounts[0]);
+      } catch (error) {
+        callback(error, null);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  };
+
   getTransactionsApprovals = async (
     contract: Contract<any>,
     account: string

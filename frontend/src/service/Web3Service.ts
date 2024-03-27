@@ -15,8 +15,11 @@ class Web3Service {
       case 3:
         network = "Ropsten testnet";
         break;
+      case 5777:
+        network = "Dev net";
+        break;
       default:
-        network = "Private net";
+        network = "unknown net";
     }
 
     return network;

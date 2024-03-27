@@ -29,7 +29,7 @@ const AccountBanner = ({ web3Session }: Props) => {
 
   const title = (
     <div className="flex justify-between">
-      <p>Network {network}</p>
+      <p>Network - {network}</p>
       <p className="text-lg">Balance</p>
     </div>
   );
