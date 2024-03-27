@@ -16,7 +16,7 @@ const ConnectWalletCard = () => {
   const { error, loading, connect } = useConnect();
 
   return (
-    <React.Fragment>
+    <div className="flex flex-col gap-3 items-center">
       {error && (
         <Alert variant="destructive" title="Error" description={error} />
       )}
@@ -40,7 +40,7 @@ const ConnectWalletCard = () => {
           </Button>
         </CardContent>
       </Card>
-    </React.Fragment>
+    </div>
   );
 };
 

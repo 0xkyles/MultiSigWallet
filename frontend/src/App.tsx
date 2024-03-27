@@ -11,9 +11,7 @@ export function App() {
       {web3Session.account && <Wallet />}
       {!web3Session.account && (
         <div className="flex-1 flex justify-center items-center">
-          <div className="flex flex-col gap-3 items-center">
-            <ConnectWalletCard />
-          </div>
+          <ConnectWalletCard />
         </div>
       )}
     </div>

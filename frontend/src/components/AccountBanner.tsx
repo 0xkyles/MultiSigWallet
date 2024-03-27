@@ -35,7 +35,7 @@ const AccountBanner = ({ web3Session }: Props) => {
   );
 
   return (
-    <div className="w-full border border-gray-700">
+    <div className="w-full shadow-lg">
       <Alert variant="default" title={title} description={description} />
     </div>
   );
