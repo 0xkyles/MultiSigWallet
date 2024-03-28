@@ -1,19 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getSlicedAddress } from "@/lib/utils";
 import useWalletStore from "@/stores/walletStore";
 import { CopyIcon } from "@radix-ui/react-icons";
 
 export function WalletInfo() {
   const { wallet } = useWalletStore();
 
-  const getSlicedAddress = (address: string) => {
-    const length = address.length;
-
-    return address.substring(0, 7) + "..." + address.substring(length - 7);
-  };
-
   return (
-    <Card className="flex-1 w-[25%] shadow-lg">
+    <Card>
       <CardHeader>
         <CardTitle>Wallet informations</CardTitle>
       </CardHeader>
