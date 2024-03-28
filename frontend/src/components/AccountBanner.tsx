@@ -1,9 +1,12 @@
 import Alert from "./Alert";
-import useWeb3Store from "@/stores/web3Store";
+import { Web3Session } from "@/stores/web3Store";
 import useNetwork from "@/hooks/useNetwork";
 
-const AccountBanner = () => {
-  const { web3Session } = useWeb3Store();
+interface Props {
+  web3Session: Web3Session;
+}
+
+const AccountBanner = ({ web3Session }: Props) => {
   const network = useNetwork();
 
   const description = (

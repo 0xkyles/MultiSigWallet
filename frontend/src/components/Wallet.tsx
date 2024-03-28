@@ -2,20 +2,26 @@ import useWalletStore from "@/stores/walletStore";
 import AccountBanner from "./AccountBanner";
 import WalletInfo from "./WalletInfo";
 import TransactionsTable from "./TransactionsTable";
+import useWeb3Store from "@/stores/web3Store";
 
 const Wallet = () => {
-  const { isWalletAvailable } = useWalletStore();
+  const { isWalletAvailable, wallet } = useWalletStore();
+  const { web3Session } = useWeb3Store();
 
   return (
     <div className="flex-1 flex flex-col gap-5">
-      <AccountBanner />
+      <AccountBanner web3Session={web3Session} />
       {isWalletAvailable && (
         <div className="flex-1 flex gap-3">
           <div className="w-[25%] shadow-lg">
-            <WalletInfo />
+            <WalletInfo wallet={wallet} />
           </div>
           <div className="flex-1">
-            <TransactionsTable />
+            <TransactionsTable
+              transactions={wallet.transactions}
+              approvalsByAccount={wallet.approvalsByAccount}
+              approvalsRequired={wallet.approvalsRequired}
+            />
           </div>
         </div>
       )}

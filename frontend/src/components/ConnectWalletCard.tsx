@@ -20,7 +20,7 @@ const ConnectWalletCard = () => {
       {error && (
         <Alert variant="destructive" title="Error" description={error} />
       )}
-      <Card className="w-[350px]">
+      <Card className="w-[350px] shadow-lg">
         <CardHeader>
           <CardTitle>Connect your wallet</CardTitle>
           <CardDescription>

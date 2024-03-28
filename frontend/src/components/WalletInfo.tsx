@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSlicedAddress } from "@/lib/utils";
-import useWalletStore from "@/stores/walletStore";
+import { Wallet } from "@/stores/walletStore";
 import { CopyIcon } from "@radix-ui/react-icons";
 
-export function WalletInfo() {
-  const { wallet } = useWalletStore();
+interface Props {
+  wallet: Wallet;
+}
 
+export function WalletInfo({ wallet }: Props) {
   return (
     <Card>
       <CardHeader>

@@ -9,8 +9,28 @@ import {
 } from "@/components/ui/table";
 import { getSlicedAddress } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { Transaction } from "@/stores/walletStore";
 
-const TransactionsTable = () => {
+interface Props {
+  transactions: Transaction[];
+  approvalsByAccount: boolean[];
+  approvalsRequired: number;
+}
+
+const TransactionsTable = ({
+  transactions,
+  approvalsByAccount,
+  approvalsRequired,
+}: Props) => {
+  if (transactions.length == 0) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-sm shadow-lg">No transactions found.</p>
+      </div>
+    );
+  }
+
   return (
     <Table className="bg-white shadow-lg">
       <TableCaption>A list of the recent transactions.</TableCaption>
@@ -20,34 +40,45 @@ const TransactionsTable = () => {
           <TableHead>Proposer</TableHead>
           <TableHead>To</TableHead>
           <TableHead>Value</TableHead>
-          <TableHead>Data</TableHead>
           <TableHead>Approvals</TableHead>
           <TableHead>Completed</TableHead>
           <TableHead className="text-right ">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">1</TableCell>
-          <TableCell>
-            {getSlicedAddress("0x066651EbA7DdD20971fb2e2b4B2Fb0905B07f975")}
-          </TableCell>
-          <TableCell>
-            {getSlicedAddress("0x066651EbA7DdD20971fb2e2b4B2Fb0905B07f975")}
-          </TableCell>
-          <TableCell>1 $eth</TableCell>
-          <TableCell>-</TableCell>
-          <TableCell>2 approvals</TableCell>
-          <TableCell>false</TableCell>
-          <TableCell className="text-right flex gap-2">
-            <Button size="sm" variant="outline">
-              Approve
-            </Button>
-            <Button size="sm" variant="destructive">
-              execute
-            </Button>
-          </TableCell>
-        </TableRow>
+        {transactions.map((transaction, txID) => (
+          <TableRow>
+            <TableCell className="font-medium">{txID}</TableCell>
+            <TableCell>{getSlicedAddress(transaction.proposer)}</TableCell>
+            <TableCell>{getSlicedAddress(transaction.to)}</TableCell>
+            <TableCell>{transaction.value} $ETH</TableCell>
+            <TableCell>{transaction.numOfApprovals} approvals</TableCell>
+            <TableCell>
+              {transaction.complete ? (
+                <CheckIcon className="w-4 h-4 bg-emerald-500 text-white rounded" />
+              ) : (
+                <Cross2Icon className="w-4 h-4 bg-red-500 text-white rounded" />
+              )}
+            </TableCell>
+            <TableCell className="flex gap-2 justify-end">
+              {!approvalsByAccount[txID] && (
+                <Button size="sm" variant="default">
+                  Approve
+                </Button>
+              )}
+              {approvalsByAccount[txID] && (
+                <Button size="sm" variant="outline">
+                  Revoke approval
+                </Button>
+              )}
+              {transaction.numOfApprovals >= approvalsRequired && (
+                <Button size="sm" variant="destructive">
+                  execute
+                </Button>
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
