@@ -12,6 +12,8 @@ const useConnect = () => {
   const connect = async () => {
     //@ts-ignore
     const { ethereum } = window;
+    setLoading(true);
+    setError("");
 
     if (!ethereum) {
       setError("Can't find metamask");
@@ -20,8 +22,6 @@ const useConnect = () => {
     }
 
     try {
-      setLoading(true);
-      setError("");
       await ethereum.enable();
 
       const web3 = new Web3(ethereum);

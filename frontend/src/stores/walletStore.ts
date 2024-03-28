@@ -21,11 +21,15 @@ export interface Wallet {
 
 interface WalletStore {
   wallet: Wallet;
+  isWalletAvailable: boolean;
+  setIsWalletAvailable: (value: boolean) => void;
   setWallet: (wallet: Wallet) => void;
 }
 
 const useWalletStore = create<WalletStore>((set) => ({
   wallet: {} as Wallet,
+  isWalletAvailable: false,
+  setIsWalletAvailable: (value: boolean) => set({ isWalletAvailable: value }),
   setWallet: (wallet: Wallet) => set({ wallet }),
 }));
 

@@ -10,12 +10,16 @@ export interface Web3Session {
 
 interface Web3Store {
   web3Session: Web3Session;
+  isAccountChanging: boolean;
   update: (session: Web3Session) => void;
+  setIsAccountChanging: (value: boolean) => void;
 }
 
 const useWeb3Store = create<Web3Store>((set) => ({
   web3Session: {} as Web3Session,
+  isAccountChanging: false,
   update: (session: Web3Session) => set({ web3Session: session }),
+  setIsAccountChanging: (value: boolean) => set({ isAccountChanging: value }),
 }));
 
 export default useWeb3Store;

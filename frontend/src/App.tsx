@@ -4,12 +4,14 @@ import Wallet from "@/components/Wallet";
 import "./App.css";
 
 export function App() {
-  const { web3Session } = useWeb3Store();
+  const {
+    web3Session: { account },
+  } = useWeb3Store();
 
   return (
     <div className="min-h-screen bg-grid py-10 px-14 flex">
-      {web3Session.account && <Wallet />}
-      {!web3Session.account && (
+      {account && <Wallet />}
+      {!account && (
         <div className="flex-1 flex justify-center items-center">
           <ConnectWalletCard />
         </div>

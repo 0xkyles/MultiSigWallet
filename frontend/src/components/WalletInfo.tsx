@@ -41,6 +41,10 @@ export function WalletInfo() {
             <p className="text-sm">{wallet.transactionsCount} transaction(s)</p>
           </div>
           <div className="space-y-1">
+            <h6>Number of owners</h6>
+            <p className="text-sm">{wallet.owners.length} owner(s)</p>
+          </div>
+          <div className="space-y-1">
             <h6>Owners</h6>
             <ul className="space-y-1">
               {wallet.owners.map((owner) => (

@@ -5,22 +5,24 @@ import WalletService from "./service/WalletService";
 import { Contract } from "web3";
 
 const WalletUpdater = () => {
-  const { wallet, setWallet } = useWalletStore();
+  const { wallet, setWallet, setIsWalletAvailable } = useWalletStore();
   const {
     web3Session: { web3, account, contract },
   } = useWeb3Store();
 
   // initial load
+  // the first time web3 is available so is contract and account.
   useEffect(() => {
     if (web3) {
       const fetch = async () => {
-        const wallet = await WalletService.getWallet(
+        const result = await WalletService.getWallet(
           contract as Contract<any>,
           web3,
           account as string
         );
 
-        setWallet(wallet);
+        setWallet({ ...wallet, ...result });
+        setIsWalletAvailable(true);
       };
 
       fetch();
@@ -43,7 +45,9 @@ const WalletUpdater = () => {
       return;
     }
 
+    // when user disconnects
     setWallet({} as Wallet);
+    setIsWalletAvailable(false);
   }, [account]);
 
   return null;
