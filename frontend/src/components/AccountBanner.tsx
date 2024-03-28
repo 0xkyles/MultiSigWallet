@@ -1,24 +1,10 @@
-import { useEffect, useState } from "react";
 import Alert from "./Alert";
-import { Web3Session } from "@/stores/web3Store";
-import Web3Service from "@/service/Web3Service";
+import useWeb3Store from "@/stores/web3Store";
+import useNetwork from "@/hooks/useNetwork";
 
-interface Props {
-  web3Session: Web3Session;
-}
-
-const AccountBanner = ({ web3Session }: Props) => {
-  const [network, setNetwork] = useState("");
-
-  useEffect(() => {
-    const fetch = async () => {
-      //@ts-ignore
-      const network = await Web3Service.getCurrentNetwork(web3Session.web3);
-      setNetwork(network);
-    };
-
-    fetch();
-  }, []);
+const AccountBanner = () => {
+  const { web3Session } = useWeb3Store();
+  const network = useNetwork();
 
   const description = (
     <div className="flex justify-between">

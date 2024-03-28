@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useWeb3Store from "./stores/web3Store";
 import contractABI from "@/build/contracts/MultiSignatureWallet.json";
 import { address as contractAddress } from "@/build/contracts/contract.json";
-import WalletService from "./service/WalletService";
+import Web3Service from "./service/Web3Service";
 
 const SessionUpdater = () => {
   const {
@@ -10,30 +10,35 @@ const SessionUpdater = () => {
     update,
   } = useWeb3Store();
 
+  // checks if the user changes account, will run when user logs for the first time
   useEffect(() => {
     if (web3) {
-      const stopInterval = WalletService.getActiveAccount(
+      const stopInterval = Web3Service.getActiveAccount(
         web3,
-        async (error, result) => {
-          if (result) {
-            if (account != result) {
-              const contract = result
+        async (error, activeAccount) => {
+          if (activeAccount !== null) {
+            // Current account has changed
+            if (account != activeAccount) {
+              const contract = activeAccount
                 ? new web3.eth.Contract(contractABI.abi, contractAddress, {
-                    from: result,
+                    from: activeAccount,
                   })
                 : undefined;
-              const balance = result
+              const balance = activeAccount
                 ? Number(
                     web3.utils.fromWei(
-                      await web3.eth.getBalance(result),
+                      await web3.eth.getBalance(activeAccount),
                       "ether"
                     )
                   )
-                : 0;
-              update({ web3, account: result, contract, balance });
+                : undefined;
+
+              update({ web3, account: activeAccount, contract, balance });
               return;
             }
+          }
 
+          if (error) {
             console.log(error);
           }
         }
