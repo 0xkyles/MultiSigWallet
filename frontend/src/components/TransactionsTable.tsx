@@ -16,12 +16,14 @@ interface Props {
   transactions: Transaction[];
   approvalsByAccount: boolean[];
   approvalsRequired: number;
+  account: string;
 }
 
 const TransactionsTable = ({
   transactions,
   approvalsByAccount,
   approvalsRequired,
+  account,
 }: Props) => {
   if (transactions.length == 0) {
     return (
@@ -47,9 +49,13 @@ const TransactionsTable = ({
       </TableHeader>
       <TableBody>
         {transactions.map((transaction, txID) => (
-          <TableRow>
+          <TableRow key={txID}>
             <TableCell className="font-medium">{txID}</TableCell>
-            <TableCell>{getSlicedAddress(transaction.proposer)}</TableCell>
+            <TableCell>
+              {account === transaction.proposer
+                ? "You"
+                : getSlicedAddress(transaction.proposer)}
+            </TableCell>
             <TableCell>{getSlicedAddress(transaction.to)}</TableCell>
             <TableCell>{transaction.value} $ETH</TableCell>
             <TableCell>{transaction.numOfApprovals} approvals</TableCell>
@@ -61,14 +67,14 @@ const TransactionsTable = ({
               )}
             </TableCell>
             <TableCell className="flex gap-2 justify-end">
-              {!approvalsByAccount[txID] && (
-                <Button size="sm" variant="default">
-                  Approve
+              {approvalsByAccount[txID] && (
+                <Button size="sm" variant="link">
+                  Revoke approval
                 </Button>
               )}
-              {approvalsByAccount[txID] && (
-                <Button size="sm" variant="outline">
-                  Revoke approval
+              {!approvalsByAccount[txID] && (
+                <Button size="sm" variant="success">
+                  Approve
                 </Button>
               )}
               {transaction.numOfApprovals >= approvalsRequired && (

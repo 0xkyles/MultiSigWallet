@@ -1,5 +1,7 @@
 import Web3, { Contract } from "web3";
 import { Transaction } from "@/stores/walletStore";
+import web3Service, { Web3Service } from "./Web3Service";
+import contractAddress from "@/build/contracts/contract.json";
 
 interface GetTransactionResponse {
   proposer: string;
@@ -11,6 +13,22 @@ interface GetTransactionResponse {
 }
 
 class WalletService {
+  web3Service: Web3Service;
+
+  constructor(service: Web3Service) {
+    this.web3Service = service;
+  }
+
+  depositToContract = async (web3: Web3, account: string, value: string) => {
+    console.log(account, value);
+    return await this.web3Service.deposit(
+      web3,
+      account,
+      contractAddress.address,
+      value
+    );
+  };
+
   getTransactionsApprovals = async (
     contract: Contract<any>,
     account: string
@@ -77,4 +95,4 @@ class WalletService {
   };
 }
 
-export default new WalletService();
+export default new WalletService(web3Service);

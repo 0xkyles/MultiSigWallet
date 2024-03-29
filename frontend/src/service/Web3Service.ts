@@ -1,6 +1,16 @@
 import Web3 from "web3";
 
-class Web3Service {
+export class Web3Service {
+  deposit = async (web3: Web3, from: string, to: string, value: string) => {
+    const tx = {
+      from,
+      to,
+      value,
+    };
+
+    return await web3.eth.sendTransaction(tx);
+  };
+
   getActiveAccount = (
     web3: Web3,
     callback: (error: any | null, result: string | null) => void

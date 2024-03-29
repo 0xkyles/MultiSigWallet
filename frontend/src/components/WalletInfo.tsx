@@ -3,14 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSlicedAddress } from "@/lib/utils";
 import { Wallet } from "@/stores/walletStore";
 import { CopyIcon } from "@radix-ui/react-icons";
+import Web3 from "web3";
 
 interface Props {
   wallet: Wallet;
+  web3: Web3;
 }
 
-export function WalletInfo({ wallet }: Props) {
+export function WalletInfo({ wallet, web3 }: Props) {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Wallet informations</CardTitle>
       </CardHeader>
@@ -27,7 +29,9 @@ export function WalletInfo({ wallet }: Props) {
           </div>
           <div className="space-y-1">
             <h6>Balance</h6>
-            <p className="text-sm">{wallet.balance} $ETH</p>
+            <p className="text-sm">
+              {web3.utils.fromWei(wallet.balance, "ether")} $ETH
+            </p>
           </div>
           <div className="space-y-1">
             <h6>Approvals required</h6>

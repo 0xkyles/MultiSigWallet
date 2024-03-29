@@ -14,13 +14,14 @@ const Wallet = () => {
       {isWalletAvailable && (
         <div className="flex-1 flex gap-3">
           <div className="w-[25%] shadow-lg">
-            <WalletInfo wallet={wallet} />
+            <WalletInfo wallet={wallet} web3={web3Session.web3} />
           </div>
           <div className="flex-1">
             <TransactionsTable
               transactions={wallet.transactions}
               approvalsByAccount={wallet.approvalsByAccount}
               approvalsRequired={wallet.approvalsRequired}
+              account={web3Session.account!}
             />
           </div>
         </div>

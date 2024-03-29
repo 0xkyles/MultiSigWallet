@@ -5,16 +5,16 @@ import {
 } from "@/components/ui/alert";
 
 interface Props {
-  title: JSX.Element | string;
+  title?: JSX.Element | string;
   description: JSX.Element | string;
-  variant?: "destructive" | "default";
+  variant?: "destructive" | "default" | "success";
   className?: string;
 }
 
 const Alert = ({ title, description, variant, className }: Props) => {
   return (
     <A className={className} variant={variant}>
-      <AlertTitle>{title}</AlertTitle>
+      {title && <AlertTitle>{title}</AlertTitle>}
       <AlertDescription>{description}</AlertDescription>
     </A>
   );
