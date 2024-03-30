@@ -34,7 +34,7 @@ class WalletService {
       callback(error, null);
     });
 
-    return () => subscription.unsubscribe();
+    return subscription;
   };
 
   depositToContract = async (web3: Web3, account: string, value: string) => {

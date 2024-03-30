@@ -5,7 +5,7 @@ import WalletService from "./service/WalletService";
 import { Contract } from "web3";
 
 const WalletUpdater = () => {
-  const { wallet, setWallet, setIsWalletAvailable, setBalance } =
+  const { wallet, setWallet, setIsWalletAvailable, addToBalance } =
     useWalletStore();
   const {
     web3Session: { web3, account, contract },
@@ -53,16 +53,20 @@ const WalletUpdater = () => {
 
   // subscribe to event here
   useEffect(() => {
-    if (account && contract) {
-      WalletService.subscribe(contract, (_, event) => {
+    if (account) {
+      const subscription = WalletService.subscribe(contract!, (_, event) => {
         if (event) {
           switch (event.event) {
             case "Deposit": {
-              setBalance(wallet.balance + Number(event.returnValues.value));
+              addToBalance(Number(event.returnValues.value));
             }
           }
         }
       });
+
+      return () => {
+        subscription.unsubscribe();
+      };
     }
   }, [account]);
 

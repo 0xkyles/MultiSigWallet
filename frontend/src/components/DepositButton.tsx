@@ -19,22 +19,23 @@ const DepositButton = () => {
   const [open, setOpen] = useState(false);
   const [unit, setUnit] = useState("ether");
   const [amount, setAmount] = useState("");
-  const { loading, setSuccess, success, onDeposit, error } = useDeposit(
-    () => {
-      setAmount("");
-    },
-    () => {
-      setTimeout(() => {
-        setOpen(false);
-        setSuccess("");
-      }, 500);
-    }
-  );
+  const { loading, onDeposit, error } = useDeposit();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    onDeposit(amount, unit);
+    onDeposit(
+      amount,
+      unit,
+      () => {
+        setAmount("");
+      },
+      () => {
+        setTimeout(() => {
+          setOpen(false);
+        }, 500);
+      }
+    );
   };
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,14 +64,6 @@ const DepositButton = () => {
             title=""
             description={error}
             variant="destructive"
-          />
-        )}
-        {success && (
-          <Alert
-            className="mb-0"
-            title=""
-            description={success}
-            variant="success"
           />
         )}
         <form onSubmit={onSubmit}>

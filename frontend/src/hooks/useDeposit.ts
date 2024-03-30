@@ -1,26 +1,28 @@
+import { useToast } from "@/components/ui/use-toast";
 import WalletService from "@/service/WalletService";
 import useWeb3Store from "@/stores/web3Store";
 import { useState } from "react";
 
-const useDeposit = (
-  cleanup: () => void,
-  onSuccess?: () => void,
-  onError?: () => void
-) => {
+const useDeposit = () => {
   const {
     web3Session: { web3, account },
   } = useWeb3Store();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const { toast } = useToast();
 
-  const onDeposit = async (amount: string, unit: string) => {
+  const onDeposit = async (
+    amount: string,
+    unit: string,
+    cleanup: () => void,
+    onSuccess?: () => void,
+    onError?: () => void
+  ) => {
     setLoading(true);
     setError("");
-    setSuccess("");
 
     if (Number(amount) <= 0) {
-      setError("Can't deposit an unvalid amount");
+      setError("Can't deposit an invalid amount");
       setLoading(false);
       return;
     }
@@ -35,7 +37,10 @@ const useDeposit = (
         depositAmount
       );
 
-      setSuccess(`Successfully deposited ${amount} ${unit}`);
+      toast({
+        description: `Succesfully deposited ${amount} ${unit}`,
+        variant: "success",
+      });
       if (onSuccess) onSuccess();
     } catch (error) {
       console.log(error);
@@ -46,7 +51,7 @@ const useDeposit = (
     }
   };
 
-  return { onDeposit, setSuccess, success, error, loading };
+  return { onDeposit, error, loading };
 };
 
 export default useDeposit;
