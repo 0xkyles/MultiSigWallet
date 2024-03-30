@@ -22,6 +22,7 @@ const Wallet = () => {
               approvalsByAccount={wallet.approvalsByAccount}
               approvalsRequired={wallet.approvalsRequired}
               account={web3Session.account!}
+              web3={web3Session.web3}
             />
           </div>
         </div>

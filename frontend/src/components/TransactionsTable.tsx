@@ -11,12 +11,14 @@ import { getSlicedAddress } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { Transaction } from "@/stores/walletStore";
+import Web3 from "web3";
 
 interface Props {
   transactions: Transaction[];
   approvalsByAccount: boolean[];
   approvalsRequired: number;
   account: string;
+  web3: Web3;
 }
 
 const TransactionsTable = ({
@@ -24,6 +26,7 @@ const TransactionsTable = ({
   approvalsByAccount,
   approvalsRequired,
   account,
+  web3,
 }: Props) => {
   if (transactions.length == 0) {
     return (
@@ -56,8 +59,16 @@ const TransactionsTable = ({
                 ? "You"
                 : getSlicedAddress(transaction.proposer)}
             </TableCell>
-            <TableCell>{getSlicedAddress(transaction.to)}</TableCell>
-            <TableCell>{transaction.value} $ETH</TableCell>
+            <TableCell>
+              {getSlicedAddress(transaction.to)}{" "}
+              {account === transaction.proposer ? "(You)" : ""}
+            </TableCell>
+            <TableCell>
+              {transaction.value === 0
+                ? 0
+                : web3.utils.fromWei(transaction.value, "ether")}{" "}
+              $ETH
+            </TableCell>
             <TableCell>{transaction.numOfApprovals} approvals</TableCell>
             <TableCell>
               {transaction.complete ? (
