@@ -1,7 +1,8 @@
-import Web3, { Contract } from "web3";
+import Web3, { Contract, EventLog } from "web3";
 import { Transaction } from "@/stores/walletStore";
 import web3Service, { Web3Service } from "./Web3Service";
 import contractAddress from "@/build/contracts/contract.json";
+import { Event } from "@/events";
 
 interface GetTransactionResponse {
   proposer: string;
@@ -19,8 +20,24 @@ class WalletService {
     this.web3Service = service;
   }
 
+  subscribe = (
+    contract: Contract<any>,
+    callback: (error: Error | null, event: EventLog | null) => void
+  ) => {
+    const subscription = contract.events.allEvents({});
+
+    subscription.on("data", (event: EventLog) => {
+      callback(null, event);
+    });
+
+    subscription.on("error", (error: Error) => {
+      callback(error, null);
+    });
+
+    return () => subscription.unsubscribe();
+  };
+
   depositToContract = async (web3: Web3, account: string, value: string) => {
-    console.log(account, value);
     return await this.web3Service.deposit(
       web3,
       account,

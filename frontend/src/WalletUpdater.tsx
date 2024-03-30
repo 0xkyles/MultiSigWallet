@@ -5,7 +5,8 @@ import WalletService from "./service/WalletService";
 import { Contract } from "web3";
 
 const WalletUpdater = () => {
-  const { wallet, setWallet, setIsWalletAvailable } = useWalletStore();
+  const { wallet, setWallet, setIsWalletAvailable, setBalance } =
+    useWalletStore();
   const {
     web3Session: { web3, account, contract },
   } = useWeb3Store();
@@ -48,6 +49,21 @@ const WalletUpdater = () => {
     // when user disconnects
     setWallet({} as Wallet);
     setIsWalletAvailable(false);
+  }, [account]);
+
+  // subscribe to event here
+  useEffect(() => {
+    if (account && contract) {
+      WalletService.subscribe(contract, (_, event) => {
+        if (event) {
+          switch (event.event) {
+            case "Deposit": {
+              setBalance(wallet.balance + Number(event.returnValues.value));
+            }
+          }
+        }
+      });
+    }
   }, [account]);
 
   return null;

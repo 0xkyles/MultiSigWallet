@@ -23,12 +23,15 @@ interface WalletStore {
   wallet: Wallet;
   isWalletAvailable: boolean;
   setIsWalletAvailable: (value: boolean) => void;
+  setBalance: (value: number) => void;
   setWallet: (wallet: Wallet) => void;
 }
 
 const useWalletStore = create<WalletStore>((set) => ({
   wallet: {} as Wallet,
   isWalletAvailable: false,
+  setBalance: (value: number) =>
+    set((state) => ({ wallet: { ...state.wallet, balance: value } })),
   setIsWalletAvailable: (value: boolean) => set({ isWalletAvailable: value }),
   setWallet: (wallet: Wallet) => set({ wallet }),
 }));

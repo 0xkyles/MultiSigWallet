@@ -46,7 +46,7 @@ const useDeposit = (
     }
   };
 
-  return { onDeposit, success, error, loading };
+  return { onDeposit, setSuccess, success, error, loading };
 };
 
 export default useDeposit;

@@ -19,14 +19,15 @@ const DepositButton = () => {
   const [open, setOpen] = useState(false);
   const [unit, setUnit] = useState("ether");
   const [amount, setAmount] = useState("");
-  const { loading, success, onDeposit, error } = useDeposit(
+  const { loading, setSuccess, success, onDeposit, error } = useDeposit(
     () => {
       setAmount("");
     },
     () => {
       setTimeout(() => {
         setOpen(false);
-      }, 1000);
+        setSuccess("");
+      }, 500);
     }
   );
 
