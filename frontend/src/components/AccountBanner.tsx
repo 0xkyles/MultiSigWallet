@@ -4,6 +4,7 @@ import useNetwork from "@/hooks/useNetwork";
 import { Button } from "./ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
 import DepositButton from "./DepositButton";
+import NewTransactionButton from "./NewTransactionButton";
 
 interface Props {
   web3Session: Web3Session;
@@ -36,9 +37,7 @@ const AccountBanner = ({ web3Session }: Props) => {
       />
       <div className="flex flex-col gap-2 justify-between">
         <DepositButton />
-        <Button variant="success">
-          <PlusIcon className="w-4 h-4 mr-2" /> new transaction
-        </Button>
+        <NewTransactionButton />
       </div>
     </div>
   );

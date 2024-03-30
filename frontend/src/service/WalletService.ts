@@ -2,7 +2,6 @@ import Web3, { Contract, EventLog } from "web3";
 import { Transaction } from "@/stores/walletStore";
 import web3Service, { Web3Service } from "./Web3Service";
 import contractAddress from "@/build/contracts/contract.json";
-import { Event } from "@/events";
 
 interface GetTransactionResponse {
   proposer: string;
@@ -109,6 +108,15 @@ class WalletService {
       transactions,
       approvalsByAccount,
     };
+  };
+
+  sendTransaction = async (
+    contract: Contract<any>,
+    to: string,
+    value: number,
+    data: string
+  ) => {
+    return contract.methods.proposeTransaction(to, value, data).send();
   };
 }
 
