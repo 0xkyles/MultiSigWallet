@@ -23,3 +23,5 @@ chmod +x deploy.sh
 npm install
 npm run dev
 ```
+
+6- Import private keys of the 3 first accounts from ganache to metamask
