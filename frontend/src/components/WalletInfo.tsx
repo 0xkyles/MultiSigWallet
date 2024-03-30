@@ -4,6 +4,7 @@ import { getSlicedAddress } from "@/lib/utils";
 import { Wallet } from "@/stores/walletStore";
 import { CopyIcon } from "@radix-ui/react-icons";
 import Web3 from "web3";
+import CopyButton from "./CopyButton";
 
 interface Props {
   wallet: Wallet;
@@ -22,9 +23,7 @@ export function WalletInfo({ wallet, web3 }: Props) {
             <h6>Contract</h6>
             <p className="flex justify-between items-center text-sm">
               {getSlicedAddress(wallet.contractAddress)}
-              <Button size="sm">
-                <CopyIcon />
-              </Button>
+              <CopyButton value={wallet.contractAddress} />
             </p>
           </div>
           <div className="space-y-1">
@@ -54,9 +53,7 @@ export function WalletInfo({ wallet, web3 }: Props) {
                   className="flex justify-between items-center text-sm"
                 >
                   {getSlicedAddress(owner)}
-                  <Button size="sm">
-                    <CopyIcon />
-                  </Button>
+                  <CopyButton value={owner} />
                 </li>
               ))}
             </ul>
