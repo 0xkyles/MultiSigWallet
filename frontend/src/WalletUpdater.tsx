@@ -5,7 +5,7 @@ import WalletService from "./service/WalletService";
 import { Contract } from "web3";
 
 const WalletUpdater = () => {
-  const { wallet, setWallet, setIsWalletAvailable, addToBalance } =
+  const { wallet, setWallet, setIsWalletAvailable, addToBalance, addTransaction } =
     useWalletStore();
   const {
     web3Session: { web3, account, contract },
@@ -36,7 +36,8 @@ const WalletUpdater = () => {
       const fetch = async () => {
         const approvalsByAccount = await WalletService.getTransactionsApprovals(
           contract as Contract<any>,
-          account
+          account,
+          wallet.transactions ? wallet.transactions.length : 0
         );
 
         setWallet({ ...wallet, approvalsByAccount });
@@ -51,14 +52,21 @@ const WalletUpdater = () => {
     setIsWalletAvailable(false);
   }, [account]);
 
-  // subscribe to event here
+  // subscribe to events
   useEffect(() => {
     if (account) {
-      const subscription = WalletService.subscribe(contract!, (_, event) => {
+      const subscription = WalletService.subscribe(contract!, async (_, event) => {
         if (event) {
           switch (event.event) {
             case "Deposit": {
               addToBalance(Number(event.returnValues.value));
+              break;
+            }
+            case "ProposeTransaction": {
+              //@ts-ignore
+              const {transaction, approvalByAccount} = await WalletService.getTransaction(contract, account, event.returnValues.txID);
+              addTransaction(transaction, approvalByAccount);
+              break;
             }
           }
         }

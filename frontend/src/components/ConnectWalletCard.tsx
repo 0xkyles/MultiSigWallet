@@ -18,7 +18,7 @@ const ConnectWalletCard = () => {
   return (
     <div className="flex flex-col gap-3 items-center">
       {error && (
-        <Alert variant="destructive" title="Error" description={error} />
+        <Alert variant="destructive" title="" description={error} />
       )}
       <Card className="w-[350px] shadow-lg">
         <CardHeader>

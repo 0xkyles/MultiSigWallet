@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSlicedAddress } from "@/lib/utils";
 import { Wallet } from "@/stores/walletStore";
-import { CopyIcon } from "@radix-ui/react-icons";
 import Web3 from "web3";
 import CopyButton from "./CopyButton";
 
@@ -38,7 +36,9 @@ export function WalletInfo({ wallet, web3 }: Props) {
           </div>
           <div className="space-y-1">
             <h6>Total transactions</h6>
-            <p className="text-sm">{wallet.transactionsCount} transaction(s)</p>
+            <p className="text-sm">
+              {wallet.transactions.length} transaction(s)
+            </p>
           </div>
           <div className="space-y-1">
             <h6>Number of owners</h6>

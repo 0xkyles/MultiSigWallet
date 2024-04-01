@@ -16,6 +16,8 @@ import { useState } from "react";
 import Alert from "./Alert";
 import WalletService from "@/service/WalletService";
 import useWeb3Store from "@/stores/web3Store";
+import { toast } from "./ui/use-toast";
+import { getSlicedAddress } from "@/lib/utils";
 
 const NewTransactionButton = () => {
   const [open, setOpen] = useState(false);
@@ -42,14 +44,20 @@ const NewTransactionButton = () => {
     //@ts-ignore
     const txValue = web3?.utils.toWei(value, unit);
     try {
-      const receipt = await WalletService.sendTransaction(
+      WalletService.sendTransaction(
         contract!,
         to,
         Number(txValue),
-        data == "" ? "0x00" : data
+        data == "" ? "0x00" : data,
+        (transactionHash) => {
+          toast({
+            title: "Transaction sent",
+            description: `hash:  ${getSlicedAddress(transactionHash)}`,
+            variant: "success",
+          });
+          setOpen(false);
+        }
       );
-
-      console.log(receipt);
     } catch (error) {
       setError("");
       console.log(error);
@@ -69,7 +77,7 @@ const NewTransactionButton = () => {
   return (
     <Dialog open={open} onOpenChange={() => setOpen(!open)}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="default">
           <PlusIcon className="w-4 h-4 mr-2" />
           New Transaction
         </Button>

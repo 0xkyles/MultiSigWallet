@@ -47,34 +47,52 @@ class WalletService {
 
   getTransactionsApprovals = async (
     contract: Contract<any>,
-    account: string
+    account: string,
+    txCount: number
   ) => {
     const approvals: boolean[] = [];
-    const transactionsCount = Number(
-      await contract.methods.transactionsCount().call()
-    );
 
-    for (let i = 0; i < transactionsCount; i++) {
+    for (let i = 0; i < txCount; i++) {
       approvals.push(await contract.methods.approvals(i, account).call());
     }
 
     return approvals;
   };
 
+  getTransaction = async (
+    contract: Contract<any>,
+    account: string,
+    txID: number
+  ) => {
+    const t: GetTransactionResponse = await contract.methods
+      .transactions(txID)
+      .call();
+
+    const approvalByAccount: boolean = await contract.methods.approvals(txID, account).call<boolean>();
+
+    const transaction: Transaction = {
+      proposer: t.proposer,
+      to: t.to,
+      value: Number(t.value),
+      data: t.data,
+      complete: t.complete,
+      numOfApprovals: Number(t.numOfApprovals),
+    };
+
+    return { transaction, approvalByAccount };
+  };
+
   getTransactions = async (contract: Contract<any>, account: string) => {
-    const transactions: Transaction[] = [];
-    const transactionsCount = await contract.methods
-      .transactionsCount()
-      .call<bigint>();
+    const txs: GetTransactionResponse[] = await contract.methods.getTransactions().call();
     const approvalsByAccount = await this.getTransactionsApprovals(
       contract,
-      account
+      account,
+      txs.length
     );
 
-    for (let i = 0; i < Number(transactionsCount); i++) {
-      const t: GetTransactionResponse = await contract.methods
-        .transactions(i)
-        .call();
+    const transactions: Transaction[] = [];
+    for (let i = 0; i < transactions.length; i++) {
+      const t = txs[i];
 
       transactions.push({
         proposer: t.proposer,
@@ -86,7 +104,7 @@ class WalletService {
       });
     }
 
-    return { transactions, transactionsCount, approvalsByAccount };
+    return { transactions, approvalsByAccount };
   };
 
   getWallet = async (contract: Contract<any>, web3: Web3, account: string) => {
@@ -96,7 +114,7 @@ class WalletService {
       .approvalsRequired()
       .call<bigint>();
     const balance = await web3.eth.getBalance(contractAddress);
-    const { transactionsCount, transactions, approvalsByAccount } =
+    const { transactions, approvalsByAccount } =
       await this.getTransactions(contract, account);
 
     return {
@@ -104,7 +122,6 @@ class WalletService {
       owners,
       approvalsRequired: Number(approvalsRequired),
       contractAddress,
-      transactionsCount: Number(transactionsCount),
       transactions,
       approvalsByAccount,
     };
@@ -114,9 +131,13 @@ class WalletService {
     contract: Contract<any>,
     to: string,
     value: number,
-    data: string
+    data: string,
+    onSent: (transactionHash: string) => void
   ) => {
-    return contract.methods.proposeTransaction(to, value, data).send();
+    return contract.methods
+      .proposeTransaction(to, value, data)
+      .send()
+      .on("transactionHash", onSent);
   };
 }
 

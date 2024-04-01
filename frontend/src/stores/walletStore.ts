@@ -14,7 +14,6 @@ export interface Wallet {
   balance: number;
   owners: string[];
   approvalsRequired: number;
-  transactionsCount: number;
   transactions: Transaction[];
   approvalsByAccount: boolean[];
 }
@@ -24,6 +23,7 @@ interface WalletStore {
   isWalletAvailable: boolean;
   setIsWalletAvailable: (value: boolean) => void;
   addToBalance: (value: number) => void;
+  addTransaction: (transaction: Transaction, approvalByAccount: boolean) => void;
   setWallet: (wallet: Wallet) => void;
 }
 
@@ -33,6 +33,14 @@ const useWalletStore = create<WalletStore>((set) => ({
   addToBalance: (value: number) =>
     set((state) => ({
       wallet: { ...state.wallet, balance: state.wallet.balance + value },
+    })),
+  addTransaction: (transaction: Transaction, approvalByAccount: boolean) =>
+    set((state) => ({
+      wallet: {
+        ...state.wallet,
+        approvalsByAccount: [...state.wallet.approvalsByAccount, approvalByAccount],
+        transactions: [...state.wallet.transactions, transaction],
+      },
     })),
   setIsWalletAvailable: (value: boolean) => set({ isWalletAvailable: value }),
   setWallet: (wallet: Wallet) => set({ wallet }),

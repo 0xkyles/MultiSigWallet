@@ -30,8 +30,8 @@ const TransactionsTable = ({
 }: Props) => {
   if (transactions.length == 0) {
     return (
-      <div className="flex justify-center items-center">
-        <p className="text-sm shadow-lg">No transactions found.</p>
+      <div className="flex h-full justify-center items-center border border-gray-500 rounded">
+        <p className="text-sm">No transactions found.</p>
       </div>
     );
   }
